@@ -26,8 +26,7 @@ const ServiceSchema = Schema({
     required: true,
   },
   fecha : {
-    type: Date,
-    default: Date.now
+    type: String,
   },
   folio : {
     type: String,
@@ -35,7 +34,15 @@ const ServiceSchema = Schema({
   },
   observaciones : {
     type: String,
-  }
+  },
+  status : {
+    type: Boolean,
+    default: false
+  },
+  user: {
+    type: Schema.ObjectId,
+    ref: "User",
+  },
 });
 
 

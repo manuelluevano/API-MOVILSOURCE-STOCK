@@ -3,6 +3,7 @@
 // const bcrypt = require("bcrypt");
 
 const Service = require("../models/service");
+const { infoUserId } = require("../services/userService");
 
 //IMPORTAR SERVICIOS
 // const jwt = require("../services/jwt");
@@ -40,8 +41,9 @@ const addService = async (req, res) => {
 
   //CREAR OBJETO DE USUARIO
   let service_to_save = new Service(params);
+  service_to_save.user = req.user.id;
 
-  //Guardar el articulo en la base de datos
+  // Guardar el articulo en la base de datos
   service_to_save
     .save()
     .then((servicioGuardado) => {
@@ -61,8 +63,43 @@ const addService = async (req, res) => {
     });
 };
 
+const listServices = async (req, res) => {
+  //Consulta a DB
+  try {
+    // obtener todos los articulos
+    let services = await Service.find({}).sort({
+      fecha: 1,
+    }).populate("user")
+
+
+    // if (req.params.ultimos) {
+    //   articulos = await Article.find({}).limit(req.params.ultimos);
+    // }
+
+    if (!services.length > 0) {
+      return res.status(404).json({
+        status: "error",
+        mensaje: "No se han encontrado articulos",
+      });
+    }
+
+    return res.status(200).send({
+      status: "Success",
+      // parametro: req.params.ultimos,
+      contador: services.length,
+      services,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      status: "Error",
+      mensaje: "Error datos",
+    });
+  }
+};
+
 //EXPORTAR ACCIONES
 module.exports = {
   pruebaService,
   addService,
+  listServices,
 };
