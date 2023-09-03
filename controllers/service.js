@@ -73,9 +73,6 @@ const listServices = async (req, res) => {
       })
       .populate("user");
 
-    // if (req.params.ultimos) {
-    //   articulos = await Article.find({}).limit(req.params.ultimos);
-    // }
 
     if (!services.length > 0) {
       return res.status(404).json({
@@ -84,10 +81,25 @@ const listServices = async (req, res) => {
       });
     }
 
+    //OBTENER SERVICIOS REALIZADO Y NO REALIZADOS
+    let servicesPendient = await Service.find({status: false})
+      .sort({
+        fecha: 1,
+      })
+      .populate("user");
+
+      let servicesFinished = await Service.find({status: true})
+      .sort({
+        fecha: 1,
+      })
+      .populate("user");
+      
     return res.status(200).send({
       status: "Success",
       // parametro: req.params.ultimos,
       contador: services.length,
+      servicesPendient: servicesPendient.length,
+      servicesFinished: servicesFinished.length,
       services,
     });
   } catch (error) {
