@@ -93,7 +93,7 @@ const listServices = async (req, res) => {
         fecha: 1,
       })
       .populate("user");
-      
+
     return res.status(200).send({
       status: "Success",
       // parametro: req.params.ultimos,
@@ -181,7 +181,7 @@ const buscador = async (req, res) => {
       { observaciones: { $regex: busqueda, $options: "i" } },
 
     ],
-  }).sort({fecha: -1}) //Orden
+  }).sort({fecha: 1}).populate("user"); //Orden
 
   if (!services.length > 0) {
     return res.status(404).json({
