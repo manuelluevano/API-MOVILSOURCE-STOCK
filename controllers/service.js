@@ -177,6 +177,7 @@ const buscador = async (req, res) => {
       { servicio: { $regex: busqueda, $options: "i" } },
       { modelo: { $regex: busqueda, $options: "i" } },
       { marca: { $regex: busqueda, $options: "i" } },
+      { status: { $regex: busqueda, $options: "i" } },
       { folio: { $regex: busqueda, $options: "i" } },
       { observaciones: { $regex: busqueda, $options: "i" } },
 
