@@ -25,6 +25,10 @@ const ServiceSchema = Schema({
     type: String,
     required: true,
   },
+  abono:{
+    type: String,
+    default: '0'
+  },
   fecha : {
     type: String,
   },
