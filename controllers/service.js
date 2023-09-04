@@ -29,8 +29,7 @@ const addService = async (req, res) => {
     !params.servicio ||
     !params.modelo ||
     !params.marca ||
-    !params.precio ||
-    !params.observaciones
+    !params.precio 
   ) {
     return res.status(400).json({
       //devolver error
