@@ -21,9 +21,12 @@ app.use(express.urlencoded({extended: true}));
 //CARGAR LAS RUTAS
 const UserRutes = require("./routes/user")
 const ServiceRutes = require("./routes/service")
+const RefaccionRutes = require("./routes/refacciones")
+
 
 app.use("/api/user", UserRutes)
 app.use("/api/service", ServiceRutes)
+app.use("/api/refaccion", RefaccionRutes)
 
  
 //RUTA PRUEBA
