@@ -1,11 +1,19 @@
 const { Schema, model } = require("mongoose");
 
 const RefaccionesSchema = Schema({
-  name: {
+  refaccion: {
     type: String,
     required: true,
   },
-  tipo: {
+  modelo: {
+    type: String,
+    required: true,
+  },
+  marca: {
+    type: String,
+    required: true,
+  },
+  calidad: {
     type: String,
     required: true,
   },
@@ -13,17 +21,13 @@ const RefaccionesSchema = Schema({
    type: String,
    required: true,
   },
-  imagen: {
-    type: String,
-    default: "default.png"
-  },
   stock: {
     type: String,
     required: true,
   },
-  marca: {
+  imagen: {
     type: String,
-    required: true,
+    default: "default.png"
   },
 });
 

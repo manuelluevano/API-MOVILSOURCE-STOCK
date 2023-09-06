@@ -1,10 +1,6 @@
 //IMPORTAR DEPENDENCIAS Y MODULOS
 const Refaccion = require("../models/refacciones");
 
-//IMPORTAR services
-// const jwt = require("../services/jwt");
-// const { validarRegistro } = require("../helper/validate");
-
 //Acciones de pruebas
 const pruebaRefaccion = (req, res) => {
   return res.status(200).send({
@@ -20,11 +16,12 @@ const addRefaccion = async (req, res) => {
 
   //REVISAR SI INGRESAMOS LOS PARAMETROS
   if (
-    !params.name ||
-    !params.tipo ||
+    !params.refaccion ||
+    !params.modelo||
+    !params.marca  ||
+    !params.calidad  ||
     !params.precio ||
-    !params.stock ||
-    !params.marca 
+    !params.stock 
   ) {
     return res.status(400).json({
       //devolver error
