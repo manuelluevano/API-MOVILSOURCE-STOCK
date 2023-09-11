@@ -29,7 +29,7 @@ const addService = async (req, res) => {
     !params.servicio ||
     !params.modelo ||
     !params.marca ||
-    !params.precio 
+    !params.precio
   ) {
     return res.status(400).json({
       //devolver error
@@ -72,7 +72,6 @@ const listServices = async (req, res) => {
       })
       .populate("user");
 
-
     if (!services.length > 0) {
       return res.status(404).json({
         status: "error",
@@ -81,13 +80,13 @@ const listServices = async (req, res) => {
     }
 
     //OBTENER SERVICIOS REALIZADO Y NO REALIZADOS
-    let servicesPendient = await Service.find({status: false})
+    let servicesPendient = await Service.find({ status: false })
       .sort({
         fecha: 1,
       })
       .populate("user");
 
-      let servicesFinished = await Service.find({status: true})
+    let servicesFinished = await Service.find({ status: true })
       .sort({
         fecha: 1,
       })
@@ -165,41 +164,79 @@ const updateStatus = async (req, res) => {
 
 const buscador = async (req, res) => {
   try {
-  //Sacar el string de busqueda
-  let busqueda = req.params.busqueda;
+    //Sacar el string de busqueda
+    let busqueda = req.params.busqueda;
 
-  //Find OR // OR = SELECT * FROM
-  services = await Service.find({
-    $or: [
-      { name: { $regex: busqueda, $options: "i" } },
-      { telefono: { $regex: busqueda, $options: "i" } },
-      { servicio: { $regex: busqueda, $options: "i" } },
-      { modelo: { $regex: busqueda, $options: "i" } },
-      { marca: { $regex: busqueda, $options: "i" } },
-      { folio: { $regex: busqueda, $options: "i" } },
-      { observaciones: { $regex: busqueda, $options: "i" } },
+    //Find OR // OR = SELECT * FROM
+    services = await Service.find({
+      $or: [
+        { name: { $regex: busqueda, $options: "i" } },
+        { telefono: { $regex: busqueda, $options: "i" } },
+        { servicio: { $regex: busqueda, $options: "i" } },
+        { modelo: { $regex: busqueda, $options: "i" } },
+        { marca: { $regex: busqueda, $options: "i" } },
+        { folio: { $regex: busqueda, $options: "i" } },
+        { observaciones: { $regex: busqueda, $options: "i" } },
+      ],
+    })
+      .sort({ fecha: 1 })
+      .populate("user"); //Orden
 
-    ],
-  }).sort({fecha: 1}).populate("user"); //Orden
+    if (!services.length > 0) {
+      return res.status(404).json({
+        status: "error",
+        mensaje: "No se han encontrado services",
+      });
+    }
 
-  if (!services.length > 0) {
-    return res.status(404).json({
-      status: "error",
-      mensaje: "No se han encontrado services",
+    //Devolver resultado
+    return res.status(200).send({
+      status: "Success",
+      contador: services.length,
+      services,
     });
-  }
-
-  //Devolver resultado
-  return res.status(200).send({
-    status: "Success",
-    contador: services.length,
-    services,
-  });
-} 
-  catch (error) {
+  } catch (error) {
     return res.status(404).json({
       status: "Error",
       mensaje: "Error al buscar",
+    });
+  }
+};
+
+const editar = async (req, res) => {
+  //recoger el id
+  let id = req.params.id;
+
+  console.log("Parametro", id);
+  // //RECOGER DATOS DEL BODY
+  let parametros = req.body;
+
+  console.log("Nuevos datos", parametros);
+  // //VALIDAR DATOS
+  // if (!id) {
+  //   return res.status(400).json({
+  //     //devolver error
+  //     status: "Error",
+  //     mensaje: "Faltan datos por enviar",
+  //   });
+  // }
+  //BUSCAR Y ACTUALIZAR ARTICULO
+  try {
+    let articulo = await Service.findOneAndUpdate({ _id: id }, req.body, {
+      new: true,
+    });
+
+    //MOSTRAR EL ARTICULO
+    return res.status(200).json({
+      status: "Success",
+      mensaje: "Servicio Actualizado 👌🏿",
+      articulo: articulo,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      status: "Error",
+      mensaje: "Faltan datos para enviar",
     });
   }
 };
@@ -209,5 +246,6 @@ module.exports = {
   addService,
   listServices,
   updateStatus,
-  buscador
+  buscador,
+  editar,
 };

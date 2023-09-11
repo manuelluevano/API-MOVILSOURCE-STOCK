@@ -1,4 +1,6 @@
 //IMPORTAR DEPENDENCIAS Y MODULOS
+const fs = require("fs");
+
 const Refaccion = require("../models/refacciones");
 
 //Acciones de pruebas
@@ -17,11 +19,11 @@ const addRefaccion = async (req, res) => {
   //REVISAR SI INGRESAMOS LOS PARAMETROS
   if (
     !params.refaccion ||
-    !params.modelo||
-    !params.marca  ||
-    !params.calidad  ||
+    !params.modelo ||
+    !params.marca ||
+    !params.calidad ||
     !params.precio ||
-    !params.stock 
+    !params.stock
   ) {
     return res.status(400).json({
       //devolver error
@@ -57,11 +59,9 @@ const listRefaccion = async (req, res) => {
   //Consulta a DB
   try {
     // obtener todos los articulos
-    let refacciones = await Refaccion.find({})
-      .sort({
-        fecha: 1,
-      })
-
+    let refacciones = await Refaccion.find({}).sort({
+      fecha: 1,
+    });
 
     if (!refacciones.length > 0) {
       return res.status(404).json({
@@ -83,6 +83,110 @@ const listRefaccion = async (req, res) => {
     });
   }
 };
+
+// const upload = async (req, res) => {
+//   //RECOGER EL ID
+//   console.log(req.body);
+
+//   const idProducto = req.body;
+
+//   //RECOGER EL FICHERO DE IMAGEN Y COMPROBAR QUE EXISTE
+//   if (!req.file) {
+//     return res.status(404).json({
+//       status: "error",
+//       mensaje: "Peticion no incluye la imagen",
+//     });
+//   }
+
+//   //CONSEGUIR EL NOMBRE DEL ARCHIVO
+//   let imagenName = req.file.originalname;
+
+//   //SACAR LA EXTENCION DEL ARCHIVO
+//   const imageSplit = imagenName.split(".");
+//   const extencion = imageSplit[1];
+
+//   //COMPROBAR LA EXTENCION
+//   if (
+//     extencion != "jpg" &&
+//     extencion != "png" &&
+//     extencion != "jpeg" &&
+//     extencion != "gif"
+//   ) {
+//     //SI LA EXTENCION ES DISTINTA A LAS INDICADAS, BUSCAR Y ELIMINAR ARCHIVO
+//     const filePath = req.file.path;
+
+//     const fileDelete = fs.unlinkSync(filePath);
+
+//     return res.status(400).json({
+//       status: "error",
+//       mensaje: "Extencion del fichero invalida",
+//     });
+//   }
+
+//   //SI ES CORRECTA, GUARDAR IMAGEN EN BD
+//   try {
+//     let imageUpload = await Refaccion.findOneAndUpdate(
+//       { _id: idProducto },
+//       { imagen: `${req.file.filename}` },
+
+//       {
+//         new: true,
+//       }
+//     );
+
+//     if (!imageUpload) {
+//       return res.status(500).json({
+//         status: "Error",
+//         mensaje: "Error en la subida de avatar",
+//       });
+//     }
+
+//     //DEVOLVER RESPUESTA
+//     return res.status(200).json({
+//       status: "Success",
+//       imageUpload,
+//       imagen: req.file,
+//     });
+//   } catch (error) {
+//     // console.log(error);
+//     return res.status(400).json({
+//       status: "Error",
+//       mensaje: "Faltan datos para enviar",
+//     });
+//   }
+// };
+
+// const imagen = async (req, res) => {
+//   //SACAR EL PARAMETRO DE LA URL
+//   // let file = req.params.file;
+//   let file = req.params.id;
+//   console.log(file);
+
+//   let photo = await Refaccion.findById(file);
+//   console.log(photo);
+
+//   return res.status(200).json({
+//     status: "Success",
+//     photo,
+//   });
+
+//   //MONTAR EL PATH REAL DE LA IMAGEN
+//   // let filePath = "./uploads/" + file;
+
+//   //COMPROBAR QUE EXISTE
+//   // fs.stat(filePath, (error, exists) => {
+//   //   if (!exists) {
+//   //     return res.status(404).json({
+//   //       status: "Error",
+//   //       mensaje: "La imagen no existe",
+//   //       exists,
+//   //     });
+//   //   }
+
+//   //   //DEVOLVER EL FILE
+//   //   return res.sendFile(path.resolve(filePath));
+//   // });
+// };
 
 // const updateStatus = async (req, res) => {
 //   //RECIBIR EL PARAMETRO DEL ID DEL USUARIO POR URL
@@ -170,7 +274,7 @@ const listRefaccion = async (req, res) => {
 //     contador: services.length,
 //     services,
 //   });
-// } 
+// }
 //   catch (error) {
 //     return res.status(404).json({
 //       status: "Error",
@@ -184,6 +288,8 @@ module.exports = {
   pruebaRefaccion,
   addRefaccion,
   listRefaccion,
+  // upload,
+  // imagen,
   // updateStatus,
   // buscador
 };

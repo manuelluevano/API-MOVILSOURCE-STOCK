@@ -11,6 +11,7 @@ router.post("/servicio",check.auth , ServiceController.addService)
 router.get("/servicios",check.auth , ServiceController.listServices)
 router.post("/servicio/status/:id",check.auth , ServiceController.updateStatus)
 router.get("/servicios/:busqueda", check.auth ,ServiceController.buscador);
+router.put("/servicio/:id",check.auth,ServiceController.editar);
 
 
 
