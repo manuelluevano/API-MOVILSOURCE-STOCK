@@ -18,18 +18,17 @@ const RefaccionesSchema = Schema({
     required: true,
   },
   precio: {
-   type: String,
-   required: true,
+    type: String,
+    required: true,
   },
   stock: {
     type: String,
     required: true,
   },
   imagen: {
-    type: String,
-    default: "default.png"
+    data: Buffer,
+    contentType: String,
   },
 });
 
-
-module.exports = model("Refaccion", RefaccionesSchema, "refacciones")
+module.exports = model("Refaccion", RefaccionesSchema, "refacciones");

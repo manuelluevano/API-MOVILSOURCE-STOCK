@@ -2,6 +2,7 @@
 const fs = require("fs");
 
 const Refaccion = require("../models/refacciones");
+const refacciones = require("../models/refacciones");
 
 //Acciones de pruebas
 const pruebaRefaccion = (req, res) => {
@@ -11,48 +12,61 @@ const pruebaRefaccion = (req, res) => {
 };
 
 const addRefaccion = async (req, res) => {
-  //RECOGER PARAMETROS
-  let params = req.body;
+  //SACAR EL PARAMETRO DE LA URL
+  let file = req.file;
 
-  console.log(req.body);
+  console.log("file", file);
 
-  //REVISAR SI INGRESAMOS LOS PARAMETROS
-  if (
-    !params.refaccion ||
-    !params.modelo ||
-    !params.marca ||
-    !params.calidad ||
-    !params.precio ||
-    !params.stock
-  ) {
-    return res.status(400).json({
-      //devolver error
-      status: "Error",
-      mensaje: "Faltan datos por enviar",
-    });
-  }
+  // //RECOGER PARAMETROS
+  // let params = req.body;
 
-  //CREAR OBJETO DE REFACCION
-  let refaccion_to_save = new Refaccion(params);
+  // console.log(req.body);
 
-  // Guardar el articulo en la base de datos
-  refaccion_to_save
-    .save()
-    .then((refaccionGuardada) => {
-      return res.status(200).json({
-        //DEVOLVER DATOS DE LA REFACCION
-        status: "success",
-        mensaje: "Refaccion registrada correctamente",
-        refaccion: refaccionGuardada,
-      });
-    })
-    .catch((error) => {
-      return res.status(400).json({
-        //devolver error
-        status: "error",
-        mensaje: "No se ha guardado el servicio: " + error.message,
-      });
-    });
+  // //REVISAR SI INGRESAMOS LOS PARAMETROS
+  // if (
+  //   !params.refaccion ||
+  //   !params.modelo ||
+  //   !params.marca ||
+  //   !params.calidad ||
+  //   !params.precio ||
+  //   !params.stock
+  // ) {
+  //   return res.status(400).json({
+  //     //devolver error
+  //     status: "Error",
+  //     mensaje: "Faltan datos por enviar",
+  //   });
+  // }
+
+  // //AGREGAR IMAGEN
+  // // const saveImage = refacciones({
+  // //   imagen: {
+  // //     data: fs.readFileSync("uploads/" + file.filename),
+  // //     // data: req.file.filename,
+  // //     contentType: file.mimetype,
+  // //   },
+  // // });
+  // //CREAR OBJETO DE REFACCION
+  // let refaccion_to_save = new Refaccion(params);
+
+  // // Guardar el articulo en la base de datos
+  // refaccion_to_save
+  //   .save()
+  //   .then((refaccionGuardada) => {
+  //     return res.status(200).json({
+  //       //DEVOLVER DATOS DE LA REFACCION
+  //       status: "success",
+  //       mensaje: "Refaccion registrada correctamente",
+  //       refaccion: refaccionGuardada,
+  //     });
+  //   })
+  //   .catch((error) => {
+  //     return res.status(400).json({
+  //       //devolver error
+  //       status: "error",
+  //       mensaje: "No se ha guardado el servicio: " + error.message,
+  //     });
+  //   });
 };
 
 const listRefaccion = async (req, res) => {
@@ -156,37 +170,57 @@ const listRefaccion = async (req, res) => {
 //   }
 // };
 
-// const imagen = async (req, res) => {
-//   //SACAR EL PARAMETRO DE LA URL
-//   // let file = req.params.file;
-//   let file = req.params.id;
-//   console.log(file);
+const imagen = async (req, res) => {
+  //SACAR EL PARAMETRO DE LA URL
+  let file = req.file;
 
-//   let photo = await Refaccion.findById(file);
-//   console.log(photo);
+  const saveImage = refacciones({
+    imagen: {
+      data: fs.readFileSync("uploads/" + req.file.filename),
+      // data: req.file.filename,
+      contentType: req.file.mimetype,
+    },
+  });
 
-//   return res.status(200).json({
-//     status: "Success",
-//     photo,
-//   });
+  await saveImage
+    .save()
+    .then((result) => {
+      console.log("Image is saved", result);
+    })
+    .catch((err) => {
+      console.log("error upload image", err);
+    });
 
-//   //MONTAR EL PATH REAL DE LA IMAGEN
-//   // let filePath = "./uploads/" + file;
+  return res.status(200).json({
+    status: "Success",
+    saveImage,
+  });
 
-//   //COMPROBAR QUE EXISTE
-//   // fs.stat(filePath, (error, exists) => {
-//   //   if (!exists) {
-//   //     return res.status(404).json({
-//   //       status: "Error",
-//   //       mensaje: "La imagen no existe",
-//   //       exists,
-//   //     });
-//   //   }
+  // let photo = await Refaccion.findById(file);
+  // console.log(photo);
 
-//   //   //DEVOLVER EL FILE
-//   //   return res.sendFile(path.resolve(filePath));
-//   // });
-// };
+  // return res.status(200).json({
+  //   status: "Success",
+  //   photo,
+  // });
+
+  //MONTAR EL PATH REAL DE LA IMAGEN
+  // let filePath = "./uploads/" + file;
+
+  //COMPROBAR QUE EXISTE
+  // fs.stat(filePath, (error, exists) => {
+  //   if (!exists) {
+  //     return res.status(404).json({
+  //       status: "Error",
+  //       mensaje: "La imagen no existe",
+  //       exists,
+  //     });
+  //   }
+
+  //   //DEVOLVER EL FILE
+  //   return res.sendFile(path.resolve(filePath));
+  // });
+};
 
 // const updateStatus = async (req, res) => {
 //   //RECIBIR EL PARAMETRO DEL ID DEL USUARIO POR URL
@@ -288,6 +322,7 @@ module.exports = {
   pruebaRefaccion,
   addRefaccion,
   listRefaccion,
+  imagen,
   // upload,
   // imagen,
   // updateStatus,

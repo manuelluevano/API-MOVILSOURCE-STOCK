@@ -21,6 +21,12 @@ const ServiceSchema = Schema({
     type: String,
     required: true,
   },
+  imei: {
+    type: String,
+  },
+  sn: {
+    type: String,
+  },
   precio:{
     type: String,
     required: true,

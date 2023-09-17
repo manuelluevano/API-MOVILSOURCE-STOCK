@@ -1,39 +1,31 @@
 const express = require("express");
 const router = express.Router();
 const refaccionController = require("../controllers/refacciones");
-// const multer = require("multer");
+const multer = require("multer");
 const path = require("path");
+const fs = require("fs");
 
 //importar middleware
 const check = require("../middlewares/auth");
+const refacciones = require("../models/refacciones");
 
 //CONFIGURACION DE SUBIDA DE ARCHIVO
-// const storage = multer.diskStorage({
-//   destination: (req, file, cb) => {
-//     cb(null, "Images");
-//   },
-//   filename: (req, file, cb) => {
-//     // cb(null, "refaccion-" + Date.now() + "-" + file.originalname);
-//       return cb(null, `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`)
-//   }  
-// });
-// const uploads = multer({ storage });
-// const storage = multer.diskStorage({
-//   destination: 'uploads',
-//   filename: (req, file, cb) => {
-//       return cb(null, `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`)
-//   }
-// })
+const almacenamiento = multer.diskStorage({
+  destination: (req, file, cb) => {
+            //Indicar donde es el destino de subida de archivo
+    cb(null, "./uploads");
+  },
+  filename: (req, file, cb) => {
+    cb(null, "image" + Date.now() + file.originalname)
+},
+});
 
-// const upload = multer({ storage });
+const upload = multer({ storage: almacenamiento });
 
-
-//DEFINIR RUTAS
-// router.use('/upload', express.static(path.resolve('uploads')));
-// router.post("/upload", check.auth, upload.single("image"), refaccionController.upload)
+router.post("/imagen",[upload.single("file0")], refaccionController.imagen);
 
 router.get("/prueba-refaccion", refaccionController.pruebaRefaccion);
-router.post("/refaccion", check.auth, refaccionController.addRefaccion);
+router.post("/refaccion", [upload.single("file0")], check.auth, refaccionController.addRefaccion);
 router.get("/refacciones", check.auth, refaccionController.listRefaccion);
 // router.get("/imagen/:id", refaccionController.imagen);
 
