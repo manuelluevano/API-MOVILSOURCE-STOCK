@@ -48,7 +48,7 @@ const addRefaccion = async (req, res) => {
     stock: params.stock,
     imagen: {
       data: fs.readFileSync("tmp/" + file.filename),
-      contentType: "image/png",
+      contentType: "image/jpeg",
     },
   });
 
