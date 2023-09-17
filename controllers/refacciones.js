@@ -47,7 +47,7 @@ const addRefaccion = async (req, res) => {
     precio: params.precio,
     stock: params.stock,
     imagen: {
-      data: fs.readFileSync("uploads/" + file.filename),
+      data: fs.readFileSync("./uploads/" + file.filename),
       contentType: "image/png",
     },
   });
