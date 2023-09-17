@@ -2,12 +2,9 @@ const express = require("express");
 const router = express.Router();
 const refaccionController = require("../controllers/refacciones");
 const multer = require("multer");
-const path = require("path");
-const fs = require("fs");
 
 //importar middleware
 const check = require("../middlewares/auth");
-const refacciones = require("../models/refacciones");
 
 //CONFIGURACION DE SUBIDA DE ARCHIVO
 const almacenamiento = multer.diskStorage({
