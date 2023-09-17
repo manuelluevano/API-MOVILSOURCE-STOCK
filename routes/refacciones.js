@@ -11,7 +11,7 @@ const check = require("../middlewares/auth");
 const almacenamiento = multer.diskStorage({
   destination: (req, file, cb) => {
     //Indicar donde es el destino de subida de archivo
-    cb(null, "uploads");
+    cb(null, "tmp");
   },
   filename: (req, file, cb) => {
     cb(
