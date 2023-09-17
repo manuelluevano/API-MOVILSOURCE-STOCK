@@ -22,15 +22,9 @@ const almacenamiento = multer.diskStorage({
 
 const upload = multer({ storage: almacenamiento });
 
-router.post("/imagen",[upload.single("file0")], refaccionController.imagen);
 
 router.get("/prueba-refaccion", refaccionController.pruebaRefaccion);
 router.post("/refaccion", [upload.single("file0")], check.auth, refaccionController.addRefaccion);
 router.get("/refacciones", check.auth, refaccionController.listRefaccion);
-// router.get("/imagen/:id", refaccionController.imagen);
-
-// router.post("/refaccion/status/:id",check.auth , refaccionController.updateStatus)
-// router.get("/refacciones/:busqueda", check.auth ,refaccionController.buscador);
-
 //Exportar router
 module.exports = router;
