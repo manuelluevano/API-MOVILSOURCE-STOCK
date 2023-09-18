@@ -26,8 +26,7 @@ const RefaccionesSchema = Schema({
     required: true,
   },
   imagen: {
-    data: Buffer,
-    contentType: String,
+    type: String,
   },
 });
 

@@ -1,26 +1,12 @@
 //IMPORTAR DEPENDENCIAS Y MODULOS
 const fs = require("fs");
-
-const Refaccion = require("../models/refacciones");
+const uploadImage = require("../uploadImage");
 const refacciones = require("../models/refacciones");
-
-//Acciones de pruebas
-const pruebaRefaccion = (req, res) => {
-  return res.status(200).send({
-    mensaje: "Mensaje enviado desde el controlador Refaccion",
-  });
-};
+const Refaccion = require("../models/refacciones");
 
 const addRefaccion = async (req, res) => {
-  //SACAR EL ARCHIVO
-  let file = req.file;
-
-  console.log("file", file);
-
   //RECOGER PARAMETROS
-  let params = req.body;
-
-  console.log(req.body);
+  let params = req.body.refaccion;
 
   //REVISAR SI INGRESAMOS LOS PARAMETROS
   if (
@@ -38,21 +24,20 @@ const addRefaccion = async (req, res) => {
     });
   }
 
+  const linkImg = await uploadImage(params.imagen)
+
   //CREAR OBJETO
-  const newRefaccion = new Refaccion({
+  const newRefaccion = new refacciones({
     refaccion: params.refaccion,
     modelo: params.modelo,
     marca: params.marca,
     calidad: params.calidad,
     precio: params.precio,
     stock: params.stock,
-    imagen: {
-      data: fs.readFileSync("tmp/" + file.filename),
-      contentType: "image/jpeg",
-    },
+    imagen: linkImg
   });
 
-  // Guardar el articulo en la base de datos
+  //  Guardar el articulo en la base de datos
   newRefaccion
     .save()
     .then((refaccionGuardada) => {
@@ -76,9 +61,8 @@ const listRefaccion = async (req, res) => {
   //Consulta a DB
   try {
     // obtener todos los articulos
-    let refacciones = await Refaccion.find({}).sort({
-      fecha: 1,
-    });
+    let refacciones = await Refaccion.find({})
+
 
     if (!refacciones.length > 0) {
       return res.status(404).json({
@@ -101,10 +85,8 @@ const listRefaccion = async (req, res) => {
   }
 };
 
-
 //EXPORTAR ACCIONES
 module.exports = {
-  pruebaRefaccion,
   addRefaccion,
   listRefaccion,
 };
