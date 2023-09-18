@@ -5,7 +5,7 @@ const cors = require("cors")
 require("dotenv").config({ path: "variables.env" });
 
 
-//Conectar a la base de datos
+//Conectar a la base de datos MONGO
 connection()
 
 //CREAR SERVIDOR DE NODE
@@ -18,6 +18,7 @@ app.use(cors())
 app.use(express.json({
     limit: '50mb'
 }));
+
 app.use(express.urlencoded({extended: true}));
 
 //CARGAR LAS RUTAS
