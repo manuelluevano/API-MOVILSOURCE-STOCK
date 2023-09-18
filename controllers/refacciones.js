@@ -1,5 +1,4 @@
 //IMPORTAR DEPENDENCIAS Y MODULOS
-const fs = require("fs");
 const uploadImage = require("../uploadImage");
 const refacciones = require("../models/refacciones");
 const Refaccion = require("../models/refacciones");
@@ -85,8 +84,45 @@ const listRefaccion = async (req, res) => {
   }
 };
 
+const buscador = async (req, res) => {
+  try {
+    //Sacar el string de busqueda
+    let busqueda = req.params.busqueda;
+
+    //Find OR // OR = SELECT * FROM
+   let  refacciones = await Refaccion.find({
+      $or: [
+        { refaccion: { $regex: busqueda, $options: "i" } },
+        { modelo: { $regex: busqueda, $options: "i" } },
+        { marca: { $regex: busqueda, $options: "i" } },
+        { calidad: { $regex: busqueda, $options: "i" } },
+      ],
+    })
+
+    if (!refacciones.length > 0) {
+      return res.status(404).json({
+        status: "error",
+        mensaje: "No se han encontrado services",
+      });
+    }
+
+    //Devolver resultado
+    return res.status(200).send({
+      status: "Success",
+      contador: refacciones.length,
+      refacciones,
+    });
+  } catch (error) {
+    return res.status(404).json({
+      status: "Error",
+      mensaje: "Error al buscar",
+    });
+  }
+};
+
 //EXPORTAR ACCIONES
 module.exports = {
   addRefaccion,
   listRefaccion,
+  buscador
 };
