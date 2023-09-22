@@ -7,7 +7,10 @@ const check = require("../middlewares/auth");
 
 router.post("/refaccion", refaccionController.addRefaccion);
 router.get("/refacciones", check.auth, refaccionController.listRefaccion);
-router.get("/refacciones/:busqueda" ,refaccionController.buscador);
+router.get("/refaccionDetail/:id", refaccionController.detail);
+
+router.post("/refaccion/:id", refaccionController.addRefaccion);
+router.get("/refacciones/:busqueda", refaccionController.buscador);
 
 //Exportar router
 module.exports = router;

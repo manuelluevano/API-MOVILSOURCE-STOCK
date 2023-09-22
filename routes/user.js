@@ -22,6 +22,7 @@ const uploads = multer({ storage });
 router.get("/prueba-usuario",  UserController.pruebaUser);
 router.post("/login", UserController.login)
 router.post("/register", UserController.register)
+router.put("/update/:id", UserController.update)
 
 //Exportar router
 module.exports = router;

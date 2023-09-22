@@ -23,7 +23,7 @@ const addRefaccion = async (req, res) => {
     });
   }
 
-  const linkImg = await uploadImage(params.imagen)
+  const linkImg = await uploadImage(params.imagen);
 
   //CREAR OBJETO
   const newRefaccion = new refacciones({
@@ -33,7 +33,7 @@ const addRefaccion = async (req, res) => {
     calidad: params.calidad,
     precio: params.precio,
     stock: params.stock,
-    imagen: linkImg
+    imagen: linkImg,
   });
 
   //  Guardar el articulo en la base de datos
@@ -60,8 +60,7 @@ const listRefaccion = async (req, res) => {
   //Consulta a DB
   try {
     // obtener todos los articulos
-    let refacciones = await Refaccion.find({})
-
+    let refacciones = await Refaccion.find({});
 
     if (!refacciones.length > 0) {
       return res.status(404).json({
@@ -84,20 +83,58 @@ const listRefaccion = async (req, res) => {
   }
 };
 
+const editar = async (req, res) => {
+  //recoger el id
+  let id = req.params.id;
+
+  console.log("Parametro", id);
+  // //RECOGER DATOS DEL BODY
+  let parametros = req.body;
+
+  console.log("Nuevos datos", parametros);
+  // //VALIDAR DATOS
+  // if (!id) {
+  //   return res.status(400).json({
+  //     //devolver error
+  //     status: "Error",
+  //     mensaje: "Faltan datos por enviar",
+  //   });
+  // }
+  //BUSCAR Y ACTUALIZAR ARTICULO
+  try {
+    let refaccion = await Refaccion.findOneAndUpdate({ _id: id }, req.body, {
+      new: true,
+    });
+
+    //MOSTRAR EL ARTICULO
+    return res.status(200).json({
+      status: "Success",
+      mensaje: "Servicio Actualizado 👌🏿",
+      refaccion: refaccion,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      status: "Error",
+      mensaje: "Faltan datos para enviar",
+    });
+  }
+};
+
 const buscador = async (req, res) => {
   try {
     //Sacar el string de busqueda
     let busqueda = req.params.busqueda;
 
     //Find OR // OR = SELECT * FROM
-   let  refacciones = await Refaccion.find({
+    let refacciones = await Refaccion.find({
       $or: [
         { refaccion: { $regex: busqueda, $options: "i" } },
         { modelo: { $regex: busqueda, $options: "i" } },
         { marca: { $regex: busqueda, $options: "i" } },
         { calidad: { $regex: busqueda, $options: "i" } },
       ],
-    })
+    });
 
     if (!refacciones.length > 0) {
       return res.status(404).json({
@@ -120,9 +157,40 @@ const buscador = async (req, res) => {
   }
 };
 
+//SACAR UNA PUBLICACION POR ID
+
+const detail = async (req, res) => {
+  let refaccionID = req.params.id;
+
+  try {
+    let refaccion = await refacciones.findById(refaccionID)
+
+    if (!refaccion) {
+      return res.status(404).send({
+        status: "error",
+        mensaje: "No existe la publicacion",
+      });
+    }
+
+    return res.status(200).send({
+      status: "Success",
+      refaccion
+    });
+
+  }catch{
+    return res.status(400).json({
+      status: "Error",
+      mensaje: "No existe la refaccion",
+    });
+  }
+  
+};
+
 //EXPORTAR ACCIONES
 module.exports = {
   addRefaccion,
   listRefaccion,
-  buscador
+  buscador,
+  editar,
+  detail
 };

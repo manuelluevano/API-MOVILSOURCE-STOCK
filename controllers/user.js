@@ -29,8 +29,8 @@ const login = async (req, res) => {
     });
   }
 
-  //BUSCAR USUARIO SI EXISTE EN LA BASE DE DATOS //    
-      // con .select ocultamos la password del usuario
+  //BUSCAR USUARIO SI EXISTE EN LA BASE DE DATOS //
+  // con .select ocultamos la password del usuario
   const userSearch = await User.findOne({ email: params.email.toLowerCase() });
   // .select({"password": 0})
 
@@ -87,9 +87,7 @@ const register = async (req, res) => {
 
   //CONTROL DE USUARIOS DUPLICADOS
   let userSearch = await User.find({
-    $or: [
-      { email: params.email.toLowerCase() }
-    ],
+    $or: [{ email: params.email.toLowerCase() }],
   });
 
   if (userSearch && userSearch.length >= 1) {
@@ -127,9 +125,102 @@ const register = async (req, res) => {
     });
 };
 
+const update = async (req, res) => {
+  //RECOGER INFO DEL USER A ACTUALIZAR
+  let userIdentify = req.params.id;
+
+  //RECOGER NUEVOS DATOS
+  let userToUpdate = req.body;
+
+  //Eliminar campos sobrantes
+  delete userToUpdate.iat;
+  delete userToUpdate.exp;
+  delete userToUpdate.role;
+  delete userToUpdate.imagen;
+
+  console.log(userToUpdate);
+
+  // //VALIDAR DATOS
+  // try {
+  //   validarUpdate(userToUpdate);
+  // } catch (error) {
+  //   return res.status(400).json({
+  //     status: "Error",
+  //     mensaje: "Faltan datos para enviar",
+  //   });
+  // }
+
+  //COMPROBAR SI EL USUARIO A ACTUALIZAR TIENE LOS MISMO DATOS QUE VAMOS A ENVIAR
+  // let userSearch = await User.find({
+  //   $or: [
+  //     { name: userToUpdate.name.toLowerCase() },
+  //     { surname: userToUpdate.surname.toLowerCase() },
+  //     { email: userToUpdate.email.toLowerCase() },
+  //   ],
+  // });
+
+  // let userIsset = false;
+
+  // //BUSCAR SI EXISTE EN LA BASE DE DATOS EL USUARIO INGRESASO (email Y name)
+  // userSearch.forEach((user) => {
+  //   if (user && user._id != userIdentify) userIsset = true;
+  // });
+
+  // if (userIsset) {
+  //   return res.status(200).send({
+  //     status: "Success",
+  //     message: "El usuario ya existe y es igual a los datos que envia",
+  //     userIsset,
+  //     userToUpdate,
+  //   });
+  // }
+
+  //CIFRAR LA NUEVA CONTRASENA
+  if (userToUpdate.password) {
+    let newPass = await bcrypt.hash(userToUpdate.password, 10);
+
+    userToUpdate.password = newPass;
+  } else {
+    //SI NO ENVIAS PASSWORD - REMOVER CAMPO PARA NO ENVIARLO VACIO
+    delete userToUpdate.password;
+  }
+
+  //BUSCAR Y ACTUALIZAR INFORMACION DE USUARIO
+  try {
+    let UserActualizado = await User.findByIdAndUpdate(
+      {
+        _id: userIdentify,
+      },
+      userToUpdate,
+      { new: true }
+    );
+
+    if (!UserActualizado) {
+      return res.status(500).json({
+        status: "Error",
+        mensaje: "Error al actualziar",
+      });
+    }
+
+    //MOSTRAR EL USUARIO
+    return res.status(200).json({
+      status: "Success",
+      message: "Usuario Actualizado Correctamente",
+      user: UserActualizado,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      status: "Error",
+      mensaje: "Error en la consulta",
+      error,
+    });
+  }
+};
 //EXPORTAR ACCIONES
 module.exports = {
   pruebaUser,
   login,
-  register
+  register,
+  update,
 };
