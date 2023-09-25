@@ -1,5 +1,5 @@
 //IMPORTAR DEPENDENCIAS Y MODULOS
-const uploadImage = require("../uploadImage");
+const uploadImage = require("../services/uploadImage");
 const refacciones = require("../models/refacciones");
 const Refaccion = require("../models/refacciones");
 

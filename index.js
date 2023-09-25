@@ -25,11 +25,13 @@ app.use(express.urlencoded({extended: true}));
 const UserRutes = require("./routes/user")
 const ServiceRutes = require("./routes/service")
 const RefaccionRutes = require("./routes/refacciones")
+const ReporteRefaccionRutes = require("./routes/reporteRefaccion")
 
 
 app.use("/api/user", UserRutes)
 app.use("/api/service", ServiceRutes)
 app.use("/api/refaccion", RefaccionRutes)
+app.use("/api/reporte", ReporteRefaccionRutes)
 
  
 //RUTA PRUEBA
