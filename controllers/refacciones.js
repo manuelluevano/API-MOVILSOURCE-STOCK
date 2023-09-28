@@ -186,6 +186,7 @@ const detail = async (req, res) => {
   
 };
 
+
 //EXPORTAR ACCIONES
 module.exports = {
   addRefaccion,

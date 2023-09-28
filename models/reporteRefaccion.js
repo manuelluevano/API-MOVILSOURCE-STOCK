@@ -2,32 +2,20 @@ const { Schema, model } = require("mongoose");
 
 const RefaccionesSchema = Schema({
   refaccion: {
-    type: String,
-    required: true,
+    type: Schema.ObjectId,
+    ref: "Refaccion",
   },
-  modelo: {
-    type: String,
-    required: true,
+  user: {
+    type: Schema.ObjectId,
+    ref: "User",
   },
-  marca: {
-    type: String,
-    required: true,
-  },
-  calidad: {
-    type: String,
-    required: true,
-  },
-  precio: {
-    type: String,
-    required: true,
-  },
-  stock: {
-    type: String,
-    required: true,
-  },
-  imagen: {
+  fecha: {
     type: String,
   },
 });
 
-module.exports = model("Refaccion", RefaccionesSchema, "refacciones");
+module.exports = model(
+  "ReporteRefaccion",
+  RefaccionesSchema,
+  "reporteRefaccion"
+);
