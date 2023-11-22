@@ -61,6 +61,7 @@ const addReport = async (req, res) => {
           mensaje: "Reporte registrado correctamente y Stock actualizado!",
           reporte: reporteGuardada,
           refaccion: updateStock,
+          nuevoStock
         });
       })
       .catch((error) => {

@@ -37,6 +37,7 @@ const ServiceSchema = Schema({
   },
   fecha : {
     type: String,
+    required: true,
   },
   folio : {
     type: String,
@@ -53,6 +54,9 @@ const ServiceSchema = Schema({
     type: Schema.ObjectId,
     ref: "User",
   },
+  local: {
+    type: String,
+  }
 });
 
 
